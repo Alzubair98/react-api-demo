@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getPosts } from "../services/postService";
+import { getPosts, deletePost } from "../services/postService";
 import gsap from "gsap";
 
 export default function Posts() {
@@ -12,6 +12,36 @@ export default function Posts() {
       setPosts(response.data.slice(1, 10));
     } catch (error: any) {
       console.log(error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const card = document.querySelector(`#post-${id}`);
+
+      gsap.to(card, {
+        opacity: 0,
+        scale: 0.7,
+        y: 50,
+        duration: 0.4,
+        ease: "power2.inOut",
+        onComplete: async () => {
+          await deletePost(id);
+          setPosts((prev) => prev.filter((post) => post.id !== id));
+
+          const remaining =
+            containerRef.current?.querySelectorAll(".post-card");
+          if (remaining && remaining.length > 0) {
+            gsap.fromTo(
+              remaining,
+              { y: 15 },
+              { y: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }
+            );
+          }
+        },
+      });
+    } catch (error: any) {
+      console.log(error, "delete error ");
     }
   };
 
@@ -29,7 +59,7 @@ export default function Posts() {
         { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }
       );
     }
-  }, [posts]);
+  }, []);
 
   return (
     <div
@@ -44,12 +74,19 @@ export default function Posts() {
         {posts.map((post) => (
           <div
             key={post.id}
+            id={`post-${post.id}`}
             className="post-card bg-gray-800 hover:bg-gray-700 transition-all rounded-xl p-6 shadow-lg hover:shadow-2xl border border-gray-700"
           >
             <h2 className="font-bold text-xl text-yellow-400 mb-3">
               {post.title}
             </h2>
             <p className="text-gray-300">{post.body}</p>
+            <button
+              className="mt-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-semibold py-2 px-4  rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              onClick={() => handleDelete(post.id)}
+            >
+              🗑 Delete
+            </button>
           </div>
         ))}
       </div>
