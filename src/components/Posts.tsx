@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getPosts, deletePost } from "../services/postService";
+import PostForm from "./PostForm";
+
 import gsap from "gsap";
 
 export default function Posts() {
@@ -69,6 +71,7 @@ export default function Posts() {
       <h1 className="text-4xl text-white font-bold mb-8 text-center">
         Latest Posts 📰
       </h1>
+      <PostForm posts={posts} setPosts={setPosts} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
