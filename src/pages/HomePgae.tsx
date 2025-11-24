@@ -21,7 +21,7 @@ export default function HomePage() {
       </h1>
 
       <button
-        onClick={() => navigate("/api")}
+        onClick={() => navigate("/dashboard")}
         className="px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 transition text-lg font-semibold shadow-lg"
       >
         Go to API Playground 🚀
